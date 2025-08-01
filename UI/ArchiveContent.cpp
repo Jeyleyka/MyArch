@@ -1,51 +1,110 @@
 #include "ArchiveContent.h"
 
 ArchiveContent::ArchiveContent(QWidget *parent)
-    : QWidget{parent}
+    : QWidget(parent), sorted(false)
 {
-    setupUI();
-    populateDummyContent();
-}
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 10, 0);
+    mainLayout->setSpacing(0);
 
-void ArchiveContent::setupUI()
-{
-    this->setStyleSheet("background-color: #1F2934; color: white;");
-
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->setContentsMargins(15, 15, 15, 15);
-    mainLayout->setSpacing(10);
-
-    titleLabel = new QLabel("Archive Contents", this);
-    titleLabel->setStyleSheet("font-size: 20px; font-weight: bold;");
+    titleLabel = new QLabel(tr("Archive contents"), this);
+    titleLabel->setStyleSheet("color: #C9DDE9; font-size: 21px; font-weight: 600; background-color: #1F2934; border-radius: 5px; padding-left: 5px;");
+    titleLabel->setFixedSize(250,50);
     mainLayout->addWidget(titleLabel);
 
-    contentList = new QListWidget(this);
-    contentList->setStyleSheet(R"(
-        QListWidget {
-            background-color: #141F26;
-            border: 1px solid #3F4D60;
-            font-size: 16px;
+    table = new QTableWidget(this);
+    table->setColumnCount(3);
+    table->setHorizontalHeaderLabels({tr("Name"), tr("Size"), tr("Type")});
+
+    QTableWidgetItem *sizeHeaderItem = new QTableWidgetItem();
+    sizeHeaderItem->setData(Qt::DisplayRole, QVariant());
+    sizeHeaderItem->setText("Size");
+    table->setHorizontalHeaderItem(1, sizeHeaderItem);
+
+    QIcon sortIcon(":/Resources/down-arrow.png");
+    sizeHeaderItem->setIcon(sortIcon);
+    sizeHeaderItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    // Внешний вид таблицы
+    table->setShowGrid(false);
+    table->setFrameStyle(QFrame::NoFrame);
+    table->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    table->setSelectionMode(QAbstractItemView::NoSelection);
+    table->setFocusPolicy(Qt::NoFocus);
+    table->verticalHeader()->setVisible(false);
+    table->setFixedSize(800, 400);
+
+    table->setStyleSheet(R"(
+        QTableWidget {
+            background-color: #18222B;
+            color: #FFFFFF;
+            font-size: 18px;
+            border: none;
         }
-        QListWidget::item {
-            padding: 10px;
+        QHeaderView::section {
+            background-color: #212A36;
+            color: #A9B7C6;
+            padding: 6px;
+            font-size: 15px;
+            border: none;
+            font-weight: bold;
         }
-        QListWidget::item:selected {
-            background-color: #3F4D60;
+        QTableWidget::item {
+            border: none;
+            padding: 6px;
+            color: #FFFFFF;
         }
     )");
-    contentList->setIconSize(QSize(24, 24));
 
-    mainLayout->addWidget(contentList);
-}
+    // Настройки заголовков
+    QHeaderView *header = table->horizontalHeader();
+    header->setStretchLastSection(false); // Последняя колонка не растягивается
+    header->setSectionsClickable(true);
+    header->setHighlightSections(false);
+    header->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    header->setSectionResizeMode(QHeaderView::Interactive);
 
-void ArchiveContent::populateDummyContent()
-{
-    QListWidgetItem* fileItem = new QListWidgetItem(QIcon(":/Resources/file.png"), "report.docx");
-    contentList->addItem(fileItem);
+    int totalWidth = table->viewport()->width();
 
-    QListWidgetItem* folderItem = new QListWidgetItem(QIcon(":/Resources/folder.png"), "images/");
-    contentList->addItem(folderItem);
+    table->setColumnWidth(0, totalWidth * 0.6);
+    table->setColumnWidth(1, totalWidth * 0.2);
+    table->setColumnWidth(2, totalWidth * 0.2);
 
-    QListWidgetItem* fileItem2 = new QListWidgetItem(QIcon(":/Resources/file.png"), "data.csv");
-    contentList->addItem(fileItem2);
+    QIcon fileIcon(":/Resources/document.png");
+    QTableWidgetItem *fileItem = new QTableWidgetItem("main.cpp");
+    fileItem->setIcon(fileIcon);
+    table->setIconSize(QSize(24, 24));
+
+    table->insertRow(0);
+    table->setItem(0, 0, fileItem);
+    table->setItem(0, 1, new QTableWidgetItem("Text File"));
+    table->setItem(0, 2, new QTableWidgetItem("C++ Source"));
+
+    table->insertRow(1);
+    table->setItem(1, 0, new QTableWidgetItem("image.png"));
+    table->setItem(1, 1, new QTableWidgetItem("120 KB"));
+    table->setItem(1, 2, new QTableWidgetItem("PNG File"));
+
+    // Обработка клика по заголовку
+    connect(header, &QHeaderView::sectionClicked, this, [=](int index) {
+        if (index == 1) {
+            if (!this->sorted) {
+                QIcon sortIcon(":/Resources/up-arrow.png");
+                sizeHeaderItem->setIcon(sortIcon);
+                this->sorted = true;
+            }
+            else {
+                QIcon sortIcon(":/Resources/down-arrow.png");
+                sizeHeaderItem->setIcon(sortIcon);
+                this->sorted = false;
+            }
+
+            sizeHeaderItem->setTextAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        }
+
+        qDebug() << "Клик по заголовку столбца:" << index << "sorted: " << this->sorted;
+    });
+
+    mainLayout->addWidget(table);
+    mainLayout->addStretch();
 }

@@ -4,5 +4,9 @@
         <file>Resources/setting.png</file>
         <file>Resources/addArch.png</file>
         <file>Resources/folder.png</file>
+        <file>Resources/document.png</file>
+        <file>Resources/fold.png</file>
+        <file>Resources/down-arrow.png</file>
+        <file>Resources/up-arrow.png</file>
     </qresource>
 </RCC>

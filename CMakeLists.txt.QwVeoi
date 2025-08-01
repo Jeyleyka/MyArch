@@ -27,7 +27,6 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Resources.qrc
         UI/ButtonGroup.h UI/ButtonGroup.cpp
         UI/ArchiveContent.h UI/ArchiveContent.cpp
-        UI/ArchiveInfo.h UI/ArchiveInfo.cpp
 
 
 

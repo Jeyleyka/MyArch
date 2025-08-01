@@ -9,7 +9,7 @@ Footer::Footer(QWidget *parent)
     this->container->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     this->title = new QLabel("MyArch", this);
-    this->title->setStyleSheet("color: #fff; font-size: 21px; font-weight: bold; padding-left: 10px;");
+    this->title->setStyleSheet("color: #C9DDE9; font-size: 25px; font-weight: bold; padding-left: 10px;");
 
     this->changeThemeBtn = new QPushButton(this);
     this->changeThemeBtn->setIcon(QIcon(":/Resources/exchange.png"));
@@ -21,7 +21,7 @@ Footer::Footer(QWidget *parent)
     this->settingsBtn->setIcon(QIcon(":/Resources/setting.png"));
     this->settingsBtn->setIconSize(QSize(24,24));
     this->settingsBtn->setText("Settings");
-    this->settingsBtn->setStyleSheet("color: #fff; font-size: 17px; border: none; margin-right: 10px;");
+    this->settingsBtn->setStyleSheet("color: #C9DDE9; font-size: 19px; border: none; margin-right: 10px;");
     this->settingsBtn->setFixedWidth(120);
 
     this->containerLayout = new QHBoxLayout(this->container);
@@ -29,7 +29,7 @@ Footer::Footer(QWidget *parent)
     this->containerLayout->setSpacing(0);
     this->containerLayout->addWidget(this->title);
     this->containerLayout->addWidget(this->changeThemeBtn);
-    this->containerLayout->setSpacing(40);
+    this->containerLayout->setSpacing(30);
     this->containerLayout->addWidget(this->settingsBtn);
 
     this->mainLayout = new QVBoxLayout(this);

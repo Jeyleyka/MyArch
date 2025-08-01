@@ -12,14 +12,14 @@ ButtonGroup::ButtonGroup(QWidget *parent)
     this->addArchBtn->setIcon(QIcon(":/Resources/addArch.png"));
     this->addArchBtn->setIconSize(QSize(28,28));
     this->addArchBtn->setText("Create archive");
-    this->addArchBtn->setStyleSheet("color: #fff; font-size: 18px; background-color: #1F2934;");
+    this->addArchBtn->setStyleSheet("color: #C9DDE9; font-size: 18px; border: none; border-radius: 5px; background-color: #1F2934;");
     this->addArchBtn->setFixedSize(200, 50);
 
     this->structArchBtn = new QPushButton(this);
     this->structArchBtn->setIcon(QIcon(":/Resources/folder.png"));
     this->structArchBtn->setIconSize(QSize(28,28));
     this->structArchBtn->setText("Archive structure");
-    this->structArchBtn->setStyleSheet("color: #fff; font-size: 18px; background-color: #1F2934;");
+    this->structArchBtn->setStyleSheet("color: #C9DDE9; font-size: 18px; border: none; border-radius: 5px; background-color: #1F2934;");
     this->structArchBtn->setFixedSize(200, 50);
 
     // this->vertLine = new QFrame(this);

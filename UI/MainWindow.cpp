@@ -27,13 +27,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->archiveContent = new ArchiveContent(this);
 
+    this->archiveInfo = new ArchiveInfo(this);
+
+    QVBoxLayout* archiveLayout = new QVBoxLayout();
+    archiveLayout->addWidget(this->archiveContent);
+    archiveLayout->addWidget(this->archiveInfo);
+
     // Горизонтальный блок кнопок + линии
     QHBoxLayout* blockLayout = new QHBoxLayout();
     blockLayout->setContentsMargins(10, 0, 0, 0);  // немного слева
     blockLayout->setSpacing(10);
     blockLayout->addWidget(this->buttonGroup);
     blockLayout->addWidget(this->vertLine);
-    blockLayout->addWidget(this->archiveContent);
+    blockLayout->addLayout(archiveLayout);
     blockLayout->addStretch(); // чтобы "оттолкнуть" блок влево, а не вправо
 
     // Обёртка для отступа от футера

@@ -2,25 +2,25 @@
 #define ARCHIVECONTENT_H
 
 #include <QWidget>
-#include <QVBoxLayout>
 #include <QLabel>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QIcon>
+#include <QTableWidget>
+#include <QVBoxLayout>
+#include <QHeaderView>
+#include <QFont>
+#include <QFileIconProvider>
+#include <QFileInfo>
 
-class ArchiveContent : public QWidget
-{
+class ArchiveContent : public QWidget {
     Q_OBJECT
-
 public:
     explicit ArchiveContent(QWidget *parent = nullptr);
 
 private:
-    QLabel* titleLabel;
-    QListWidget* contentList;
+    QLabel *titleLabel;
+    QTableWidget *table;
 
-    void setupUI();
-    void populateDummyContent(); // Для примера
+    bool sorted;
 };
+
 
 #endif // ARCHIVECONTENT_H

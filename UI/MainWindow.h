@@ -9,6 +9,7 @@
 #include "Footer.h"
 #include "ButtonGroup.h"
 #include "ArchiveContent.h"
+#include "ArchiveInfo.h"
 
 class MainWindow : public QMainWindow
 {
@@ -22,6 +23,7 @@ private:
     Footer* footer;
     ButtonGroup* buttonGroup;
     ArchiveContent* archiveContent;
+    ArchiveInfo* archiveInfo;
 
     QVBoxLayout* mainLayout;
 
