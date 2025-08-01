@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/exchange.png</file>
+        <file>Resources/setting.png</file>
+        <file>Resources/addArch.png</file>
+        <file>Resources/folder.png</file>
+    </qresource>
+</RCC>
