@@ -2,66 +2,40 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Archiver VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Найти Qt
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets LinguistTools)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools)
+# 🧱 Сборка главного приложения
+qt_add_executable(Archiver
+    MANUAL_FINALIZATION
 
-set(TS_FILES translations/Archiver_en_150.ts)
+    main.cpp
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Archiver
-        MANUAL_FINALIZATION
+    UI/MainWindow.cpp UI/MainWindow.h
+    UI/Footer.cpp UI/Footer.h
+    UI/ButtonGroup.cpp UI/ButtonGroup.h
+    UI/ArchiveContent.cpp UI/ArchiveContent.h
+    UI/ArchiveInfo.cpp UI/ArchiveInfo.h
+    Core/ArchiveManager.cpp Core/ArchiveManager.h
 
-        main.cpp
+    Resources.qrc
+)
 
-        UI/MainWindow.cpp
-        UI/MainWindow.h
-        Core/ArchiveManager.h Core/ArchiveManager.cpp
-        UI/Footer.h UI/Footer.cpp
-        Resources.qrc
-        UI/ButtonGroup.h UI/ButtonGroup.cpp
-        UI/ArchiveContent.h UI/ArchiveContent.cpp
-        UI/ArchiveInfo.h UI/ArchiveInfo.cpp
+# 🔗 Линкуем библиотеки
+target_link_libraries(Archiver PRIVATE
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+)
 
-
-
-        # ${TS_FILES}
-    )
-
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-else()
-    add_executable(Archiver
-        main.cpp
-
-        UI/MainWindow.cpp
-        UI/MainWindow.h
-
-        Core/class.cpp
-        Core/class.h
-
-        ${TS_FILES}
-    )
-
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
-
-target_link_libraries(Archiver PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-# macOS/iOS bundle metadata
-if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.Archiver)
-endif()
-
+# Бандл и установка
 set_target_properties(Archiver PROPERTIES
-    ${BUNDLE_ID_OPTION}
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
@@ -72,6 +46,4 @@ install(TARGETS Archiver
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(Archiver)
-endif()
+qt_finalize_executable(Archiver)

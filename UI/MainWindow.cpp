@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Группа кнопок
     this->buttonGroup = new ButtonGroup(this);
 
+    connect(this->buttonGroup, &ButtonGroup::createArchiveRequested, this, &MainWindow::handleCreateArchive);
+
     // Вертикальная линия
     this->vertLine = new QFrame(this);
     this->vertLine->setFrameShape(QFrame::VLine);
@@ -59,3 +61,35 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 MainWindow::~MainWindow() {}
+
+void MainWindow::handleCreateArchive() {
+    QMessageBox::StandardButton choice = QMessageBox::question(this, "MyArch", "Do you want to archive a folder", QMessageBox::Yes | QMessageBox::No);
+
+    QStringList inputFiles;
+
+    if (choice == QMessageBox::Yes) {
+        QString folder = QFileDialog::getExistingDirectory(this, "Select folder to archive");
+
+        if (folder.isEmpty()) return;
+
+        inputFiles << folder;
+    } else {
+        inputFiles = QFileDialog::getOpenFileNames(this, "Select files to archive");
+
+        if (inputFiles.isEmpty()) return;
+    }
+
+    QString archivePath = QFileDialog::getSaveFileName(this, "Save archive", "", "ZIP archive(*.zip)");
+
+    if (archivePath.isEmpty()) return;
+
+    if (!archivePath.endsWith(".zip"))
+        archivePath += ".zip";
+
+    bool success = ArchiveManager::createArchive(archivePath, inputFiles);
+
+    if (success)
+        QMessageBox::information(this, "Success", "Archive created successfully.");
+    else
+        QMessageBox::warning(this, "Error", "Failed to create archive.");
+}

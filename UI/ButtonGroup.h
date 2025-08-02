@@ -13,6 +13,7 @@ public:
     explicit ButtonGroup(QWidget *parent = nullptr);
 
 signals:
+    void createArchiveRequested();
 
 private:
     QWidget* container;

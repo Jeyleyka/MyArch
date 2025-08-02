@@ -15,6 +15,8 @@ class ArchiveContent : public QWidget {
 public:
     explicit ArchiveContent(QWidget *parent = nullptr);
 
+
+
 private:
     QLabel *titleLabel;
     QTableWidget *table;

@@ -5,11 +5,14 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QFrame>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #include "Footer.h"
 #include "ButtonGroup.h"
 #include "ArchiveContent.h"
 #include "ArchiveInfo.h"
+#include "../Core/ArchiveManager.h"
 
 class MainWindow : public QMainWindow
 {
@@ -18,6 +21,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+private slots:
+    void handleCreateArchive();
 
 private:
     Footer* footer;
