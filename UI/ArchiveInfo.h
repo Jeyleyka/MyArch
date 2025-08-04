@@ -6,12 +6,19 @@
 #include <QFrame>
 #include <QVBoxLayout>
 #include <QProgressBar>
+#include <QThread>
+#include <QCoreApplication>
 
 class ArchiveInfo : public QWidget
 {
     Q_OBJECT
 public:
     explicit ArchiveInfo(QWidget *parent = nullptr);
+
+    QProgressBar* getProgressBar() const;
+
+public slots:
+    void setProgress(int value);
 
 signals:
 

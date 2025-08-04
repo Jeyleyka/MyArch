@@ -94,8 +94,14 @@ void MainWindow::handleCreateArchive() {
 
     connect(thread, &QThread::started, worker, &ArchiveWorker::process);
     connect(worker, &ArchiveWorker::entryAdded, this->archiveContent, &ArchiveContent::addEntry, Qt::QueuedConnection);
+    connect(worker, &ArchiveWorker::progressUpdated, this->archiveInfo, &ArchiveInfo::setProgress);
+    connect(worker, &ArchiveWorker::progressUpdated, this, [this](int value) {
+        if (value < 100)
+            this->smoothlyFillProgressBar(value);
+        else
+            smoothlyFillProgressBar(100);
+    });
     connect(worker, &ArchiveWorker::finished, thread, &QThread::quit);
-    // connect(worker, &ArchiveWorker::finished, worker, &QObject::deleteLater);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     connect(thread, &QThread::finished, worker, &QObject::deleteLater);
     connect(worker, &ArchiveWorker::finished, this, &MainWindow::onArchiveFinished);
@@ -105,4 +111,19 @@ void MainWindow::handleCreateArchive() {
 
 void MainWindow::onArchiveFinished() {
     QMessageBox::information(this, "Success", "Archive created successfully.");
+}
+
+void MainWindow::smoothlyFillProgressBar(int targetValue) {
+    int current = this->archiveInfo->getProgressBar()->value();
+    int step = (targetValue - current) / 10;
+
+    if (step == 0) step = (targetValue > current) ? 1 : -1;
+
+    for (int i = current; i != targetValue; i += step) {
+        this->archiveInfo->getProgressBar()->setValue(i);
+        QThread::msleep(15);  // скорость "анимации"
+        QCoreApplication::processEvents();
+    }
+
+    this->archiveInfo->getProgressBar()->setValue(targetValue);
 }

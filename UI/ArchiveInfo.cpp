@@ -12,7 +12,7 @@ ArchiveInfo::ArchiveInfo(QWidget *parent)
 
     this->progressBar = new QProgressBar(this);
     this->progressBar->setRange(0, 100);
-    this->progressBar->setValue(40);
+    this->progressBar->setValue(0);
     this->progressBar->setTextVisible(false);
     this->progressBar->setFixedHeight(18);
     this->progressBar->setStyleSheet(R"(
@@ -56,4 +56,19 @@ ArchiveInfo::ArchiveInfo(QWidget *parent)
     this->mainLayout->setContentsMargins(0,0,0,0);
     this->mainLayout->setSpacing(0);
     this->mainLayout->addWidget(this->container);
+}
+
+QProgressBar* ArchiveInfo::getProgressBar() const {
+    return this->progressBar;
+}
+
+void ArchiveInfo::setProgress(int value) {
+    int current = this->progressBar->value();
+
+    while (current < value) {
+        ++current;
+        this->progressBar->setValue(current);
+        QThread::msleep(20);
+        QCoreApplication::processEvents();
+    }
 }

@@ -27,10 +27,13 @@ signals:
     void entryAdded(const QString& name, const QString& size, const QString& type);
     void finished();
     void errorOccurred(const QString &message);
+    void progressUpdated(int percent);
+    void progressStep(const QString& currentFile);
+
 private:
     QString archivePath;
     QStringList inputFiles;
-
+    qint64 totalUncompressedSize;
 };
 
 #endif // ARCHIVEWORKER_H

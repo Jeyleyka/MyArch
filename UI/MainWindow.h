@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QThread>
+#include <QTimer>
 
 #include "Footer.h"
 #include "ButtonGroup.h"
@@ -26,6 +27,7 @@ public:
 private slots:
     void handleCreateArchive();
     void onArchiveFinished();
+    void smoothlyFillProgressBar(int targetValue);
 
 private:
     Footer* footer;

@@ -1,7 +1,7 @@
 #include "ArchiveWorker.h"
 
 ArchiveWorker::ArchiveWorker(const QString& archivePath, const QStringList& inputFiles, QObject* parent)
-    : QObject(parent), archivePath(archivePath), inputFiles(inputFiles) {}
+    : QObject(parent), archivePath(archivePath), inputFiles(inputFiles), totalUncompressedSize(0) {}
 
 
 void ArchiveWorker::process() {
@@ -12,47 +12,41 @@ void ArchiveWorker::process() {
     args << "-r" << archivePath;
 
     QString baseDir;
-    QStringList allItems;
+    QStringList topLevelItems;
 
-    for (const QString& filePath : inputFiles) {
-        QFileInfo info(filePath);
-
+    for (const QString& path : inputFiles) {
+        QFileInfo info(path);
         if (info.isDir()) {
             if (baseDir.isEmpty())
                 baseDir = info.absolutePath();
 
-            // Добавляем корневую папку
-            allItems << filePath;
+            QDir dir(path);
+            QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries, QDir::DirsFirst);
 
-            QDir dir(filePath);
+            for (const QFileInfo& entry : entries) {
+                topLevelItems << entry.absoluteFilePath();
+            }
 
-            // Вложенные папки (только на первом уровне)
-            QFileInfoList subDirs = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
-            for (const QFileInfo& subDir : subDirs)
-                allItems << subDir.absoluteFilePath();
-
-            // Файлы верхнего уровня
-            QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-            for (const QFileInfo& file : files)
-                allItems << file.absoluteFilePath();
-
+            topLevelItems << path;  // сама папка
         } else {
             if (baseDir.isEmpty())
                 baseDir = info.absoluteDir().absolutePath();
 
-            allItems << filePath;
+            topLevelItems << path;
         }
     }
 
     QDir base(baseDir);
     zip->setWorkingDirectory(baseDir);
 
-    for (const QString& path : allItems) {
+    int total = topLevelItems.size();
+    int count = 0;
+
+    for (const QString& path : topLevelItems) {
         QFileInfo info(path);
         QString relativePath = base.relativeFilePath(path);
         args << relativePath;
 
-        // Добавляем в таблицу
         QString name = info.fileName();
         if (info.isDir()) {
             emit entryAdded(name, "-", "Folder");
@@ -60,6 +54,10 @@ void ArchiveWorker::process() {
             QString sizeStr = QString::number(info.size() / 1024.0, 'f', 2) + " KB";
             emit entryAdded(name, sizeStr, "File");
         }
+
+        count++;
+        int progress = static_cast<int>((count / static_cast<double>(total)) * 99);
+        emit progressUpdated(progress);
     }
 
     zip->setArguments(args);
@@ -67,6 +65,7 @@ void ArchiveWorker::process() {
     connect(zip, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, [this, zip](int exitCode, QProcess::ExitStatus) {
                 if (exitCode == 0) {
+                    emit progressUpdated(100);  // Завершено
                     emit finished();
                 } else {
                     emit errorOccurred("Failed to create archive:\n" + zip->readAllStandardError());
