@@ -86,10 +86,23 @@ void MainWindow::handleCreateArchive() {
     if (!archivePath.endsWith(".zip"))
         archivePath += ".zip";
 
-    bool success = ArchiveManager::createArchive(archivePath, inputFiles);
+    ArchiveWorker* worker = new ArchiveWorker(archivePath, inputFiles);
+    QThread* thread = new QThread;
 
-    if (success)
-        QMessageBox::information(this, "Success", "Archive created successfully.");
-    else
-        QMessageBox::warning(this, "Error", "Failed to create archive.");
+    worker->moveToThread(thread);
+    worker->setParent(nullptr);
+
+    connect(thread, &QThread::started, worker, &ArchiveWorker::process);
+    connect(worker, &ArchiveWorker::entryAdded, this->archiveContent, &ArchiveContent::addEntry, Qt::QueuedConnection);
+    connect(worker, &ArchiveWorker::finished, thread, &QThread::quit);
+    // connect(worker, &ArchiveWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(worker, &ArchiveWorker::finished, this, &MainWindow::onArchiveFinished);
+
+    thread->start();
+}
+
+void MainWindow::onArchiveFinished() {
+    QMessageBox::information(this, "Success", "Archive created successfully.");
 }

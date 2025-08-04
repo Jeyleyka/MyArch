@@ -22,9 +22,10 @@ qt_add_executable(Archiver
     UI/ButtonGroup.cpp UI/ButtonGroup.h
     UI/ArchiveContent.cpp UI/ArchiveContent.h
     UI/ArchiveInfo.cpp UI/ArchiveInfo.h
-    Core/ArchiveManager.cpp Core/ArchiveManager.h
+
 
     Resources.qrc
+    Core/ArchiveWorker.h Core/ArchiveWorker.cpp
 )
 
 # 🔗 Линкуем библиотеки

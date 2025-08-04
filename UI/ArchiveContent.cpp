@@ -33,6 +33,7 @@ ArchiveContent::ArchiveContent(QWidget *parent)
     table->setFocusPolicy(Qt::NoFocus);
     table->verticalHeader()->setVisible(false);
     table->setFixedSize(800, 400);
+    table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     table->setStyleSheet(R"(
         QTableWidget {
@@ -75,15 +76,15 @@ ArchiveContent::ArchiveContent(QWidget *parent)
     fileItem->setIcon(fileIcon);
     table->setIconSize(QSize(24, 24));
 
-    table->insertRow(0);
-    table->setItem(0, 0, fileItem);
-    table->setItem(0, 1, new QTableWidgetItem("Text File"));
-    table->setItem(0, 2, new QTableWidgetItem("C++ Source"));
+    // table->insertRow(0);
+    // table->setItem(0, 0, fileItem);
+    // table->setItem(0, 1, new QTableWidgetItem("Text File"));
+    // table->setItem(0, 2, new QTableWidgetItem("C++ Source"));
 
-    table->insertRow(1);
-    table->setItem(1, 0, new QTableWidgetItem("image.png"));
-    table->setItem(1, 1, new QTableWidgetItem("120 KB"));
-    table->setItem(1, 2, new QTableWidgetItem("PNG File"));
+    // table->insertRow(1);
+    // table->setItem(1, 0, new QTableWidgetItem("image.png"));
+    // table->setItem(1, 1, new QTableWidgetItem("120 KB"));
+    // table->setItem(1, 2, new QTableWidgetItem("PNG File"));
 
     // Обработка клика по заголовку
     connect(header, &QHeaderView::sectionClicked, this, [=](int index) {
@@ -107,4 +108,13 @@ ArchiveContent::ArchiveContent(QWidget *parent)
 
     mainLayout->addWidget(table);
     mainLayout->addStretch();
+}
+
+void ArchiveContent::addEntry(const QString &name, const QString &size, const QString &type) {
+    int row = this->table->rowCount();
+    this->table->insertRow(row);
+
+    this->table->setItem(row, 0, new QTableWidgetItem(name));
+    this->table->setItem(row, 1, new QTableWidgetItem(size));
+    this->table->setItem(row, 2, new QTableWidgetItem(type));
 }

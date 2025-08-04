@@ -15,7 +15,8 @@ class ArchiveContent : public QWidget {
 public:
     explicit ArchiveContent(QWidget *parent = nullptr);
 
-
+public slots:
+    void addEntry(const QString& name, const QString& size, const QString& type);
 
 private:
     QLabel *titleLabel;

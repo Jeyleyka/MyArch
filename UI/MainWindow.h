@@ -7,12 +7,13 @@
 #include <QFrame>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QThread>
 
 #include "Footer.h"
 #include "ButtonGroup.h"
 #include "ArchiveContent.h"
 #include "ArchiveInfo.h"
-#include "../Core/ArchiveManager.h"
+#include "../Core/ArchiveWorker.h"
 
 class MainWindow : public QMainWindow
 {
@@ -24,6 +25,7 @@ public:
 
 private slots:
     void handleCreateArchive();
+    void onArchiveFinished();
 
 private:
     Footer* footer;
