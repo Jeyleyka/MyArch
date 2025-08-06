@@ -9,6 +9,8 @@
 #include <QFont>
 #include <QFileIconProvider>
 #include <QFileInfo>
+#include <QLineEdit>
+#include <QScrollBar>
 
 #include "../SizeItem/SizeItem.h"
 
@@ -22,8 +24,12 @@ public:
 public slots:
     void addEntry(const QIcon& icon, const QString& name, const QString& size, const QString& type);
 
+private slots:
+    void filterTable(const QString& text);
+
 private:
     QLabel *titleLabel;
+    QLineEdit* findFiles;
     QTableWidget *table;
 
     bool sorted;

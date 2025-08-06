@@ -7,14 +7,26 @@ ArchiveContent::ArchiveContent(QWidget *parent)
     mainLayout->setContentsMargins(0, 0, 10, 0);
     mainLayout->setSpacing(0);
 
-    titleLabel = new QLabel(tr("Archive contents"), this);
-    titleLabel->setStyleSheet("color: #C9DDE9; font-size: 21px; font-weight: 600; background-color: #1F2934; border-radius: 5px; padding-left: 5px;");
-    titleLabel->setFixedSize(250,50);
-    mainLayout->addWidget(titleLabel);
+    QHBoxLayout* headerLayout = new QHBoxLayout(this);
+
+    this->titleLabel = new QLabel(tr("Archive contents"), this);
+    this->titleLabel->setStyleSheet("color: #C9DDE9; font-size: 21px; font-weight: 600; background-color: #1F2934; border-radius: 5px; padding-left: 5px;");
+    this->titleLabel->setFixedSize(250,50);
+    headerLayout->addWidget(this->titleLabel, 0, Qt::AlignLeft);
+
+    this->findFiles = new QLineEdit(this);
+    this->findFiles->setStyleSheet("color: #C9DDE9; font-size: 21px; font-weight: 600; background-color: #1F2934; border-radius: 5px; padding-left: 5px;");
+    this->findFiles->setFixedSize(300,50);
+    this->findFiles->setPlaceholderText("Find file or folder...");
+    headerLayout->addWidget(this->findFiles);
+
+    mainLayout->addLayout(headerLayout);
 
     table = new QTableWidget(this);
     table->setColumnCount(3);
     table->setHorizontalHeaderLabels({tr("Name"), tr("Size"), tr("Type")});
+
+    connect(this->findFiles, &QLineEdit::textChanged, this, &ArchiveContent::filterTable);
 
     QTableWidgetItem *sizeHeaderItem = new QTableWidgetItem();
     sizeHeaderItem->setData(Qt::DisplayRole, QVariant());
@@ -56,6 +68,34 @@ ArchiveContent::ArchiveContent(QWidget *parent)
             color: #FFFFFF;
         }
     )");
+
+    this->table->verticalScrollBar()->setStyleSheet(R"(
+    QScrollBar:vertical {
+        background: #1F2934;
+        width: 10px;
+        margin: 0px 0px 0px 0px;
+        border-radius: 5px;
+    }
+
+    QScrollBar::handle:vertical {
+        background: #3B82F6;
+        min-height: 25px;
+        border-radius: 5px;
+    }
+
+    QScrollBar::handle:vertical:hover {
+        background: #60A5FA;
+    }
+
+    QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+        background: none;
+        height: 0px;
+    }
+
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+    }
+)");
 
     // Настройки заголовков
     QHeaderView *header = table->horizontalHeader();
@@ -114,4 +154,17 @@ void ArchiveContent::addEntry(const QIcon& icon, const QString &name, const QStr
     this->table->setItem(row, 0, nameItem);
     this->table->setItem(row, 1, sizeItem);
     this->table->setItem(row, 2, typeItem);
+}
+
+void ArchiveContent::filterTable(const QString &text) {
+    for (int row = 0; row < this->table->rowCount(); ++row) {
+        bool match = false;
+
+        QString fileName = this->table->item(row, 0)->text();
+
+        if (fileName.contains(text, Qt::CaseInsensitive))
+            match = true;
+
+        this->table->setRowHidden(row, !match);
+    }
 }

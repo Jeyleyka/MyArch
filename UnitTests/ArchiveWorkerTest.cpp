@@ -27,6 +27,7 @@ void ArchiveWorkerTest::testCreateArchive() {
         QTest::qWait(100);
         waitTime += 100;
     }
+
     QCOMPARE(fileSpy.count(), 1);
 
     QVariant sizeVariant = fileSpy.takeFirst().at(0);
@@ -38,6 +39,7 @@ void ArchiveWorkerTest::testCreateArchive() {
         QTest::qWait(100);
         waitTime2 += 100;
     }
+
     QCOMPARE(addFileInTableSpy.count(), 1);
 
     QVERIFY(QFile::exists(archivePath));
