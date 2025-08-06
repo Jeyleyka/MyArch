@@ -10,13 +10,17 @@
 #include <QFileIconProvider>
 #include <QFileInfo>
 
+#include "SizeItem.h"
+
 class ArchiveContent : public QWidget {
     Q_OBJECT
 public:
     explicit ArchiveContent(QWidget *parent = nullptr);
 
+    QTableWidget* getTable() const;
+
 public slots:
-    void addEntry(const QString& name, const QString& size, const QString& type);
+    void addEntry(const QIcon& icon, const QString& name, const QString& size, const QString& type);
 
 private:
     QLabel *titleLabel;

@@ -76,17 +76,6 @@ ArchiveContent::ArchiveContent(QWidget *parent)
     fileItem->setIcon(fileIcon);
     table->setIconSize(QSize(24, 24));
 
-    // table->insertRow(0);
-    // table->setItem(0, 0, fileItem);
-    // table->setItem(0, 1, new QTableWidgetItem("Text File"));
-    // table->setItem(0, 2, new QTableWidgetItem("C++ Source"));
-
-    // table->insertRow(1);
-    // table->setItem(1, 0, new QTableWidgetItem("image.png"));
-    // table->setItem(1, 1, new QTableWidgetItem("120 KB"));
-    // table->setItem(1, 2, new QTableWidgetItem("PNG File"));
-
-    // Обработка клика по заголовку
     connect(header, &QHeaderView::sectionClicked, this, [=](int index) {
         if (index == 1) {
             if (!this->sorted) {
@@ -110,11 +99,19 @@ ArchiveContent::ArchiveContent(QWidget *parent)
     mainLayout->addStretch();
 }
 
-void ArchiveContent::addEntry(const QString &name, const QString &size, const QString &type) {
+QTableWidget* ArchiveContent::getTable() const {
+    return this->table;
+}
+
+void ArchiveContent::addEntry(const QIcon& icon, const QString &name, const QString &size, const QString &type) {
     int row = this->table->rowCount();
     this->table->insertRow(row);
 
-    this->table->setItem(row, 0, new QTableWidgetItem(name));
-    this->table->setItem(row, 1, new QTableWidgetItem(size));
-    this->table->setItem(row, 2, new QTableWidgetItem(type));
+    QTableWidgetItem* nameItem = new QTableWidgetItem(icon, name);
+    QTableWidgetItem* sizeItem = new QTableWidgetItem(size);
+    QTableWidgetItem* typeItem = new QTableWidgetItem(type);
+
+    this->table->setItem(row, 0, nameItem);
+    this->table->setItem(row, 1, sizeItem);
+    this->table->setItem(row, 2, typeItem);
 }

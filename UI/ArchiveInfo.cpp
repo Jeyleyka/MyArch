@@ -37,7 +37,7 @@ ArchiveInfo::ArchiveInfo(QWidget *parent)
         return horizLine;
     };
 
-    this->archSize = new QLabel("Size of archive, number of files", this);
+    this->archSize = new QLabel("Size of archive", this);
     this->archSize->setStyleSheet("color: #C9DDE9; font-size: 19px; font-weight: 500;");
 
     this->fastLog = new QLabel("Quick operation log", this);
@@ -60,6 +60,14 @@ ArchiveInfo::ArchiveInfo(QWidget *parent)
 
 QProgressBar* ArchiveInfo::getProgressBar() const {
     return this->progressBar;
+}
+
+QLabel* ArchiveInfo::getArchSize() const {
+    return this->archSize;
+}
+
+QLabel* ArchiveInfo::getFastLog() const {
+    return this->fastLog;
 }
 
 void ArchiveInfo::setProgress(int value) {

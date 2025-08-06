@@ -1,8 +1,7 @@
 #include "ArchiveWorker.h"
 
 ArchiveWorker::ArchiveWorker(const QString& archivePath, const QStringList& inputFiles, QObject* parent)
-    : QObject(parent), archivePath(archivePath), inputFiles(inputFiles), totalUncompressedSize(0) {}
-
+    : QObject(parent), archivePath(archivePath), inputFiles(inputFiles), currentArchiveSize(0), filesProcessed(0) {}
 
 void ArchiveWorker::process() {
     QProcess* zip = new QProcess(this);
@@ -13,6 +12,9 @@ void ArchiveWorker::process() {
 
     QString baseDir;
     QStringList topLevelItems;
+
+    QIcon folderIcon(":/Resources/fold.png");
+    QIcon fileIcon(":/Resources/document.png");
 
     for (const QString& path : inputFiles) {
         QFileInfo info(path);
@@ -41,6 +43,7 @@ void ArchiveWorker::process() {
 
     int total = topLevelItems.size();
     int count = 0;
+    qint64 totalSize = 0;  // Здесь суммируем размер
 
     for (const QString& path : topLevelItems) {
         QFileInfo info(path);
@@ -49,10 +52,15 @@ void ArchiveWorker::process() {
 
         QString name = info.fileName();
         if (info.isDir()) {
-            emit entryAdded(name, "-", "Folder");
+            emit entryAdded(folderIcon, name, "-", "Folder");
+            emit quickLogUpdated("Added folder: " + name);
         } else {
-            QString sizeStr = QString::number(info.size() / 1024.0, 'f', 2) + " KB";
-            emit entryAdded(name, sizeStr, "File");
+            qint64 sizeBytes = info.size();
+            totalSize += sizeBytes;
+
+            QString sizeStr = QString::number(sizeBytes / 1024.0, 'f', 2) + " KB";
+            emit entryAdded(fileIcon, name, sizeStr, "File");
+            emit quickLogUpdated("Added file: " + name);
         }
 
         count++;
@@ -63,10 +71,13 @@ void ArchiveWorker::process() {
     zip->setArguments(args);
 
     connect(zip, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, [this, zip](int exitCode, QProcess::ExitStatus) {
+            this, [this, zip, total](int exitCode, QProcess::ExitStatus) {
                 if (exitCode == 0) {
-                    emit progressUpdated(100);  // Завершено
+                    QFileInfo info(archivePath);
+                    qint64 finalSize = info.size();
+                    emit progressUpdated(100);  // Завершено, передаем -1 чтобы показать окончание
                     emit finished();
+                    emit showFinishedSize(finalSize);
                 } else {
                     emit errorOccurred("Failed to create archive:\n" + zip->readAllStandardError());
                     emit finished();

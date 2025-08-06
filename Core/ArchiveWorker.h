@@ -24,16 +24,19 @@ public slots:
     void process();
 
 signals:
-    void entryAdded(const QString& name, const QString& size, const QString& type);
+    void entryAdded(const QIcon& icon, const QString& name, const QString& size, const QString& type);
     void finished();
+    void showFinishedSize(qint64 finalSize);
     void errorOccurred(const QString &message);
     void progressUpdated(int percent);
     void progressStep(const QString& currentFile);
+    void quickLogUpdated(const QString& name);
 
 private:
     QString archivePath;
     QStringList inputFiles;
-    qint64 totalUncompressedSize;
+    qint64 currentArchiveSize;
+    int filesProcessed;
 };
 
 #endif // ARCHIVEWORKER_H

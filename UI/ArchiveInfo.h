@@ -16,6 +16,8 @@ public:
     explicit ArchiveInfo(QWidget *parent = nullptr);
 
     QProgressBar* getProgressBar() const;
+    QLabel* getArchSize() const;
+    QLabel* getFastLog() const;
 
 public slots:
     void setProgress(int value);

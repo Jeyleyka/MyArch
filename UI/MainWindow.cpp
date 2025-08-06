@@ -29,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->archiveContent = new ArchiveContent(this);
 
+    connect(this->archiveContent->getTable()->horizontalHeader(), &QHeaderView::sectionClicked, this, &MainWindow::onSectionClicked);
+
     this->archiveInfo = new ArchiveInfo(this);
 
     QVBoxLayout* archiveLayout = new QVBoxLayout();
@@ -94,12 +96,21 @@ void MainWindow::handleCreateArchive() {
 
     connect(thread, &QThread::started, worker, &ArchiveWorker::process);
     connect(worker, &ArchiveWorker::entryAdded, this->archiveContent, &ArchiveContent::addEntry, Qt::QueuedConnection);
+    connect(worker, &ArchiveWorker::quickLogUpdated, this, [this](const QString& name) {
+        this->archiveInfo->getFastLog()->setText(name);
+    });
     connect(worker, &ArchiveWorker::progressUpdated, this->archiveInfo, &ArchiveInfo::setProgress);
     connect(worker, &ArchiveWorker::progressUpdated, this, [this](int value) {
         if (value < 100)
             this->smoothlyFillProgressBar(value);
         else
             smoothlyFillProgressBar(100);
+    });
+
+    connect(worker, &ArchiveWorker::showFinishedSize, this, [this](qint64 finalSize) {
+        this->archiveInfo->getArchSize()->setText(
+            "Archive size: " + QString::number(finalSize / (1024.0 * 1024.0), 'f', 2) + " MB");
+        this->archiveInfo->getFastLog()->setText("Archiving completed");
     });
     connect(worker, &ArchiveWorker::finished, thread, &QThread::quit);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
@@ -126,4 +137,24 @@ void MainWindow::smoothlyFillProgressBar(int targetValue) {
     }
 
     this->archiveInfo->getProgressBar()->setValue(targetValue);
+}
+
+void MainWindow::onSectionClicked(int column) {
+    static bool ascending = false;
+
+    if (column == SIZE_COLUMN_INDEX) {
+        this->archiveContent->getTable()->sortItems(column, ascending ? Qt::AscendingOrder : Qt::DescendingOrder);
+        ascending = !ascending;
+    }
+}
+
+void MainWindow::onUpdateArchSize(qint64 bytesWritten, int filesProcessed, int totalFiles) {
+    if (filesProcessed >= 0 && totalFiles > 0) {
+        this->archiveInfo->getArchSize()->setText(QString("%1 / %2 files").arg(filesProcessed).arg(totalFiles));
+    }
+
+    if (bytesWritten >= 0) {
+        this->archiveInfo->getArchSize()->setText("Size of archive: " + QString::number(bytesWritten / 1024.0, 'f', 2) + " KB"
+                                                  + QString(" %1 / %2 files").arg(filesProcessed).arg(totalFiles));
+    }
 }

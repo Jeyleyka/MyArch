@@ -28,6 +28,8 @@ private slots:
     void handleCreateArchive();
     void onArchiveFinished();
     void smoothlyFillProgressBar(int targetValue);
+    void onSectionClicked(int column);
+    void onUpdateArchSize(qint64 bytesWritten, int filesProcessed, int totalFiles);
 
 private:
     Footer* footer;
@@ -42,5 +44,7 @@ private:
     QWidget *container;
 
     QFrame* vertLine;
+
+    static constexpr int SIZE_COLUMN_INDEX = 1;
 };
 #endif // MAINWINDOW_H

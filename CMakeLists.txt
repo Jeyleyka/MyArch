@@ -26,6 +26,7 @@ qt_add_executable(Archiver
 
     Resources.qrc
     Core/ArchiveWorker.h Core/ArchiveWorker.cpp
+    UI/SizeItem.h UI/SizeItem.cpp
 )
 
 # 🔗 Линкуем библиотеки
