@@ -18,15 +18,15 @@ qt_add_executable(Archiver
     main.cpp
 
     UI/MainWindow.cpp UI/MainWindow.h
-    UI/Footer.cpp UI/Footer.h
-    UI/ButtonGroup.cpp UI/ButtonGroup.h
-    UI/ArchiveContent.cpp UI/ArchiveContent.h
-    UI/ArchiveInfo.cpp UI/ArchiveInfo.h
+    UI/Header/Header.cpp UI/Header/Header.h
+    UI/ButtonGroup/ButtonGroup.cpp UI/ButtonGroup/ButtonGroup.h
+    UI/ArchiveContent/ArchiveContent.cpp UI/ArchiveContent/ArchiveContent.h
+    UI/ArchiveInfo/ArchiveInfo.cpp UI/ArchiveInfo/ArchiveInfo.h
 
 
     Resources.qrc
     Core/ArchiveWorker.h Core/ArchiveWorker.cpp
-    UI/SizeItem.h UI/SizeItem.cpp
+    UI/SizeItem/SizeItem.h UI/SizeItem/SizeItem.cpp
 )
 
 # 🔗 Линкуем библиотеки
