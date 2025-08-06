@@ -1,4 +1,4 @@
-#include "Footer.h"
+#include "Header.h"
 
 Footer::Footer(QWidget *parent)
     : QWidget{parent}

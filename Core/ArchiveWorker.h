@@ -11,7 +11,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QListView>
-#include <QTreeView>
+// #include <QTreeView>
 #include <QDirIterator>
 
 class ArchiveWorker : public QObject
@@ -29,7 +29,6 @@ signals:
     void showFinishedSize(qint64 finalSize);
     void errorOccurred(const QString &message);
     void progressUpdated(int percent);
-    void progressStep(const QString& currentFile);
     void quickLogUpdated(const QString& name);
 
 private:

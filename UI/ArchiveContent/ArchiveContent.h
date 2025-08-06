@@ -10,7 +10,7 @@
 #include <QFileIconProvider>
 #include <QFileInfo>
 
-#include "SizeItem.h"
+#include "../SizeItem/SizeItem.h"
 
 class ArchiveContent : public QWidget {
     Q_OBJECT

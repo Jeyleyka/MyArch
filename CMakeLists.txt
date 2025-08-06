@@ -16,6 +16,7 @@ qt_add_executable(Archiver
     MANUAL_FINALIZATION
 
     main.cpp
+    app.rc
 
     UI/MainWindow.cpp UI/MainWindow.h
     UI/Header/Header.cpp UI/Header/Header.h
@@ -35,6 +36,15 @@ target_link_libraries(Archiver PRIVATE
     Qt6::Gui
     Qt6::Widgets
 )
+
+add_executable(ArchiveTests
+    UnitTests/ArchiveWorkerTest.cpp UnitTests/ArchiveWorkerTest.h
+    Core/ArchiveWorker.cpp Core/ArchiveWorker.h
+)
+
+find_package(Qt6 REQUIRED COMPONENTS Test)
+
+target_link_libraries(ArchiveTests Qt6::Test Qt6::Widgets)
 
 # Бандл и установка
 set_target_properties(Archiver PROPERTIES

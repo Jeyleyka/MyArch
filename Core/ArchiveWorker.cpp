@@ -5,7 +5,7 @@ ArchiveWorker::ArchiveWorker(const QString& archivePath, const QStringList& inpu
 
 void ArchiveWorker::process() {
     QProcess* zip = new QProcess(this);
-    zip->setProgram("D:/zip/bin/zip.exe");
+    zip->setProgram("D:/Work/Archiver/zip/bin/zip.exe");
 
     QStringList args;
     args << "-r" << archivePath;

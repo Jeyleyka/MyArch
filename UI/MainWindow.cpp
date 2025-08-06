@@ -147,14 +147,3 @@ void MainWindow::onSectionClicked(int column) {
         ascending = !ascending;
     }
 }
-
-void MainWindow::onUpdateArchSize(qint64 bytesWritten, int filesProcessed, int totalFiles) {
-    if (filesProcessed >= 0 && totalFiles > 0) {
-        this->archiveInfo->getArchSize()->setText(QString("%1 / %2 files").arg(filesProcessed).arg(totalFiles));
-    }
-
-    if (bytesWritten >= 0) {
-        this->archiveInfo->getArchSize()->setText("Size of archive: " + QString::number(bytesWritten / 1024.0, 'f', 2) + " KB"
-                                                  + QString(" %1 / %2 files").arg(filesProcessed).arg(totalFiles));
-    }
-}

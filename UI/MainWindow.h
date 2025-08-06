@@ -10,10 +10,10 @@
 #include <QThread>
 #include <QTimer>
 
-#include "Footer.h"
-#include "ButtonGroup.h"
-#include "ArchiveContent.h"
-#include "ArchiveInfo.h"
+#include "./Header/Header.h"
+#include "./ButtonGroup/ButtonGroup.h"
+#include "./ArchiveContent/ArchiveContent.h"
+#include "./ArchiveInfo/ArchiveInfo.h"
 #include "../Core/ArchiveWorker.h"
 
 class MainWindow : public QMainWindow
@@ -29,7 +29,6 @@ private slots:
     void onArchiveFinished();
     void smoothlyFillProgressBar(int targetValue);
     void onSectionClicked(int column);
-    void onUpdateArchSize(qint64 bytesWritten, int filesProcessed, int totalFiles);
 
 private:
     Footer* footer;
